@@ -32,29 +32,29 @@
 
 (defmethod driver/display-name :ibminformix [_] "IBMInformix")
 
-(defmethod driver/humanize-connection-error-message :ibminformix [_ message]
-  (condp re-matches message
-    #"^FATAL: database \".*\" does not exist$"
-    (driver.common/connection-error-messages :database-name-incorrect)
+;; (defmethod driver/humanize-connection-error-message :ibminformix [_ message]
+;;   (condp re-matches message
+;;     #"^FATAL: database \".*\" does not exist$"
+;;     (driver.common/connection-error-messages :database-name-incorrect)
 
-    #"^No suitable driver found for.*$"
-    (driver.common/connection-error-messages :invalid-hostname)
+;;     #"^No suitable driver found for.*$"
+;;     (driver.common/connection-error-messages :invalid-hostname)
 
-    #"^Connection refused. Check that the hostname and port are correct and that the postmaster is accepting TCP/IP connections.$"
-    (driver.common/connection-error-messages :cannot-connect-check-host-and-port)
+;;     #"^Connection refused. Check that the hostname and port are correct and that the postmaster is accepting TCP/IP connections.$"
+;;     (driver.common/connection-error-messages :cannot-connect-check-host-and-port)
 
-    #"^FATAL: role \".*\" does not exist$"
-    (driver.common/connection-error-messages :username-incorrect)
+;;     #"^FATAL: role \".*\" does not exist$"
+;;     (driver.common/connection-error-messages :username-incorrect)
 
-    #"^FATAL: password authentication failed for user.*$"
-    (driver.common/connection-error-messages :password-incorrect)
+;;     #"^FATAL: password authentication failed for user.*$"
+;;     (driver.common/connection-error-messages :password-incorrect)
 
-    #"^FATAL: .*$" ; all other FATAL messages: strip off the 'FATAL' part, capitalize, and add a period
-    (let [[_ message] (re-matches #"^FATAL: (.*$)" message)]
-      (str (str/capitalize message) \.))
+;;     #"^FATAL: .*$" ; all other FATAL messages: strip off the 'FATAL' part, capitalize, and add a period
+;;     (let [[_ message] (re-matches #"^FATAL: (.*$)" message)]
+;;       (str (str/capitalize message) \.))
 
-    #".*" ; default
-    message))
+;;     #".*" ; default
+;;     message))
 
 
 ;;; +----------------------------------------------------------------------------------------------------------------+

@@ -27,13 +27,27 @@ this is a work in progress; testing is not completed, so errors may occur when q
 ## HOW TO BUILD 
 with tools.deps/tools.build/Depstar (as of Metabase v0.41.0)
 
-### Prereqs: Install Metabase locally
+### Prereq: Install Metabase locally
+```
+cd ..
+git clone https://github.com/metabase/metabase.git
+```
 
 ### Prereq: Install the Clojure CLI
 
 Make sure you have the `clojure` CLI version `1.10.3.933` or newer installed; you can check this with `clojure
 --version`. Follow the instructions at https://clojure.org/guides/getting_started if you need to install a
 newer version.
+
+### Prereq: Download Informix JDBC Driver jar
+Download the jar from: https://mvnrepository.com/artifact/com.ibm.informix/jdbc   
+and put it into the `plugins` directory of the metbase repository.
+```
+cp jdbc.jar ../metabase/plugins/jdbc.jar
+```
+
+TODO: Figure out if we can just add this maven dependency to the `deps.edn` file to auto-download the latest jar and the copy it to the plguins folder?? https://clojure.org/reference/deps_and_cli#_maven 
+
 
 ### customize /../deps.edn
 replace /PATH/TO/ with the correct information
@@ -52,7 +66,7 @@ replace /PATH/TO/ with the correct information and make sure to reference to you
 ### Build it
 
 ```sh
-clojure -X:dev:build
+./build.sh
 ```
 
 will create `target/ibminformix.metabase-driver.jar`. 
@@ -60,6 +74,11 @@ will create `target/ibminformix.metabase-driver.jar`.
 ### Copy it to your plugins dir, restart Metabase and the driver will show up.
 
 ```bash
-cp target/ibminformix.metabase-driver.jar /path/to/metabase/plugins/
-java -jar /path/to/metabase/metabase.jar
+cp target/ibminformix.metabase-driver.jar ../metabase/plugins/
+```
+
+### Restart metabase, watch the logs for any errors, and expect the driver to show up when adding a new datasource
+```
+cd ../metabase
+clojure -M:run
 ```
