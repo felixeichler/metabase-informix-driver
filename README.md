@@ -1,33 +1,9 @@
 # metabase-informix-driver
-Driver for connecting IBM Informix DB to metabase
-
+Driver for connecting IBM Informix DB to Metabase.  
 Works with IBM Informix Version 12.10
 
-Also needed in the /metabase/plugins/ is the ifxjdbc.jar
-
-https://www.ibm.com/de-de/products/informix/developer-tools
-
-For instructions on how to install the IBM Informix JDBC Driver:
-
-https://www.ibm.com/docs/en/informix-servers/12.10?topic=driver-files-in-informix-jdbc
-
-### IMPORTANT 1
-Build with tools.deps/tools.build/Depstar
-* IBMinformix Metabase v0.41.0 Driver - tag v.1.2.0
-
-Build with leiningen
-* IBMinformix Metabase v0.40 Driver - tag v.1.1.1   
-* IBMinformix Metabase v0.37 Driver - tag v.1.0.0 
-
-as of Metabase v0.41.0 building drivers with LEININGEN is deprecated: see Branch built-with-leiningen
-
-## IMPORTANT 2
-this is a work in progress; testing is not completed, so errors may occur when querying an Informix DB in metabase. Feedback is welcome.
-
-## HOW TO BUILD 
-with tools.deps/tools.build/Depstar (as of Metabase v0.41.0)
-
-### Prereq: Install Metabase locally
+## Building
+### Prereq: Clone Metabase repository locally
 ```
 cd ..
 git clone https://github.com/metabase/metabase.git
@@ -41,13 +17,12 @@ newer version.
 
 ### Prereq: Download Informix JDBC Driver jar
 Download the jar from: https://mvnrepository.com/artifact/com.ibm.informix/jdbc   
-and put it into the `plugins` directory of the metbase repository.
+and copy it into the `plugins` directory of the metabase repository.
 ```
 cp jdbc.jar ../metabase/plugins/jdbc.jar
 ```
 
-TODO: Figure out if we can just add this maven dependency to the `deps.edn` file to auto-download the latest jar and the copy it to the plguins folder?? https://clojure.org/reference/deps_and_cli#_maven 
-
+TODO: Automate the download of this file, possibly using Maven/deps.edn
 
 ### customize /../deps.edn
 replace /PATH/TO/ with the correct information
@@ -63,7 +38,9 @@ replace /PATH/TO/ with the correct information and make sure to reference to you
                 metabase/build-drivers {:local/root "/PATH/TO/metabase-0.41.0/bin/build-drivers"}}
 ```
 
-### Build it
+TODO: Automate that
+
+### Build the driver
 
 ```sh
 ./build.sh
@@ -71,14 +48,26 @@ replace /PATH/TO/ with the correct information and make sure to reference to you
 
 will create `target/ibminformix.metabase-driver.jar`. 
 
-### Copy it to your plugins dir, restart Metabase and the driver will show up.
+### Copy it to Metabase's plugins dir
 
 ```bash
 cp target/ibminformix.metabase-driver.jar ../metabase/plugins/
 ```
 
-### Restart metabase, watch the logs for any errors, and expect the driver to show up when adding a new datasource
+### Restart Metabase, watch the logs for any errors, and expect the driver to show up when adding a new datasource
 ```
 cd ../metabase
 clojure -M:run
 ```
+
+## Build & run in docker
+Prereq: Run through all the build steps
+```
+docker build . -t metabase-with-informix
+docker run -d -p 3000:3000 metabase-with-informix
+```
+
+
+## Disclaimer
+This is a work in progress; testing is not completed, so errors may occur when querying an Informix DB in Metabase.  
+Feedback is welcome.
